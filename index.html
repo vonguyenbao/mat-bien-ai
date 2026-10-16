@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mắt Biển AI – học nhìn ra dòng chảy xa bờ</title>
+<meta name="description" content="Trang web học nhận biết dòng chảy xa bờ, phòng chống đuối nước – AI chạy ngay trên máy của bạn.">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#155e75">
+<link rel="icon" href="icon/icon-192.png">
+<link rel="apple-touch-icon" href="icon/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Mắt Biển AI">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="dau">
+  <a href="#trang-chu" class="logo"><span class="logo-mat" aria-hidden="true"></span>Mắt Biển AI</a>
+  <nav id="dieuHuong">
+    <a href="#thu-mat">Thử mắt</a>
+    <a href="#soi-anh">Soi ảnh</a>
+    <a href="#nho">Nhớ để sống</a>
+    <a href="#ve-du-an">Về dự án</a>
+  </nav>
+</header>
+
+<main>
+  <!-- ═════════════ TRANG CHỦ ═════════════ -->
+  <section id="trang-chu" class="trang">
+    <div class="bia">
+      <p class="khau-hieu" id="khauHieu">Biển lặng chưa chắc đã hiền</p>
+      <h1>Học nhìn ra <span>dòng chảy xa bờ</span></h1>
+      <p class="mo-dau">Dòng chảy xa bờ thường nằm ở chỗ <b>ít sóng bạc đầu, trông lặng hơn</b> xung quanh – nên rất dễ bị nhầm là chỗ an toàn. Trang web này giúp bạn luyện mắt nhận ra nó, có AI do nhóm học sinh tự huấn luyện, chạy ngay trên máy của bạn.</p>
+      <div class="ba-nut">
+        <a class="the-lon" href="#thu-mat"><b>Thử mắt</b><span>Bạn chọn trước, đáp án chuyên gia và AI hiện sau</span></a>
+        <a class="the-lon" href="#soi-anh"><b>Soi ảnh</b><span>AI chia ảnh thành ô, tô vùng có dấu hiệu</span></a>
+        <a class="the-lon" href="#nho"><b>Nhớ để sống</b><span>5 dấu hiệu Ngũ Hành, 5 việc khi bị cuốn</span></a>
+      </div>
+      <p><button class="nut phu" id="nutThuThach">Thử thách 10 giây</button></p>
+    </div>
+    <div class="nhac-an-toan">Mắt Biển AI là <b>công cụ học tập</b>, không thay thế lực lượng cứu hộ và <b>không bao giờ kết luận một vùng biển là an toàn</b>. Ra biển: chỉ tắm trong vùng phao, vào giờ có cứu hộ.</div>
+  </section>
+
+  <!-- ═════════════ THỬ MẮT ═════════════ -->
+  <section id="thu-mat" class="trang">
+    <h2>Thử mắt</h2>
+    <div id="tmBatDau" class="the">
+      <p>Mỗi ảnh là một bãi biển chụp từ trên cao. Hãy <b>chạm vào chỗ bạn nghĩ có dòng chảy xa bờ</b>, hoặc chọn “Không thấy”. Sau đó bạn sẽ xem đáp án chuyên gia đã đánh dấu và vùng AI tô.</p>
+      <div class="hang-nut">
+        <button class="nut chinh" id="tmLuyen">Bắt đầu luyện (10 ảnh)</button>
+        <button class="nut" id="tmThuThach">Thử thách 10 giây</button>
+      </div>
+      <p class="ghi-chu" id="tmTrangThai"></p>
+    </div>
+    <div id="tmChoi" class="an">
+      <div class="thanh-tren"><span id="tmSo"></span><span id="tmDem" class="dem-gio an"></span><span id="tmDiem"></span></div>
+      <div class="khung-anh"><canvas id="tmCanvas" width="960" height="720"></canvas></div>
+      <div class="hang-nut" id="tmNutTraLoi">
+        <button class="nut chinh" id="tmChon" disabled>Chọn chỗ này</button>
+        <button class="nut" id="tmKhongThay">Không thấy dòng chảy</button>
+      </div>
+      <div id="tmPhanHoi" class="the an"></div>
+    </div>
+    <div id="tmKetThuc" class="the an"></div>
+  </section>
+
+  <!-- ═════════════ SOI ẢNH ═════════════ -->
+  <section id="soi-anh" class="trang">
+    <h2>Soi ảnh</h2>
+    <p class="ghi-chu" id="saMoHinh">Đang kiểm tra mô hình…</p>
+    <div class="the">
+      <p style="margin-top:0">Chọn một ảnh mẫu hoặc ảnh của bạn (nên chụp <b>từ chỗ cao, ngang ảnh</b> – giống ảnh camera AI đã học):</p>
+      <div class="dai-anh" id="saMau"></div>
+      <div class="hang-nut">
+        <label class="nut"><input type="file" id="saTep" accept="image/*" hidden> Chọn ảnh của bạn</label>
+        <label class="chk"><input type="checkbox" id="saHienSo"> Hiện con số AI chấm</label>
+        <label class="chk"><input type="checkbox" id="saHienLuoi" checked> Hiện lưới ô</label>
+      </div>
+    </div>
+    <div class="khung-anh"><canvas id="saCanvas" width="960" height="720"></canvas><div id="saDangCham" class="dang-cham an">AI đang chấm từng ô…</div></div>
+    <div class="chu-giai">
+      <span><i style="background:rgba(220,38,38,.55)"></i>Đỏ: có dấu hiệu dòng chảy xa bờ</span>
+      <span><i style="background:rgba(250,204,21,.6)"></i>Vàng: AI chưa chắc</span>
+      <span><i style="background:transparent;border:1px solid #94a3b8"></i>Không tô: AI chưa thấy dấu hiệu rõ – <b>không có nghĩa là an toàn</b></span>
+    </div>
+    <div id="saThongDiep" class="the"></div>
+    <details class="the"><summary>AI chấm thế nào?</summary>
+      <ol id="saCachCham">
+        <li>Ảnh mở ngay trong trình duyệt, không gửi đi đâu.</li>
+        <li>Ảnh được chia thành nhiều ô. Với mỗi ô, AI nhìn rộng hơn ô một chút để thấy sóng hai bên.</li>
+        <li>Mô hình của nhóm cho mỗi ô ba con số: khả năng là <b>dòng chảy xa bờ</b>, <b>sóng bình thường</b>, hay <b>không phải mặt biển</b>.</li>
+        <li>Ô nào khả năng dòng chảy từ ngưỡng đỏ trở lên thì tô đỏ, từ ngưỡng vàng thì tô vàng. Ngưỡng do nhóm chọn trên bộ ảnh kiểm tra của một camera khác, sao cho ít bỏ sót nhất.</li>
+      </ol>
+    </details>
+    <details class="the" id="saNapTay"><summary>Nạp mô hình từ máy (khi chưa có thư mục mo-hinh)</summary>
+      <p class="ghi-chu">Chọn cùng lúc 3 tệp Teachable Machine xuất ra: model.json, weights.bin, metadata.json.</p>
+      <input type="file" id="saTepMoHinh" multiple accept=".json,.bin">
+    </details>
+  </section>
+
+  <!-- ═════════════ NHỚ ĐỂ SỐNG ═════════════ -->
+  <section id="nho" class="trang">
+    <h2>Nhớ để sống</h2>
+    <h3>5 dấu hiệu Ngũ Hành</h3>
+    <div class="luoi-the" id="nhoNguHanh"></div>
+    <img class="hinh" src="hinh/nam-dau-hieu.png" alt="Hình minh hoạ năm dấu hiệu dòng chảy xa bờ">
+    <h3>Nếu bị dòng chảy kéo ra: 5 việc</h3>
+    <ol class="nam-viec" id="nhoNamViec"></ol>
+    <img class="hinh" src="hinh/thoat.png" alt="Hình minh hoạ cách thoát khỏi dòng chảy xa bờ: bơi song song với bờ">
+    <div class="the canh-bao-do"><b>Nếu thấy người khác bị cuốn</b><ul id="nhoKhiThay"></ul></div>
+    <h3>Thẻ Giao ước đi biển</h3>
+    <div class="the">
+      <p style="margin-top:0">Tạo một tấm thẻ để gửi cho gia đình qua Zalo. Tên chỉ dùng để in lên thẻ, không lưu lại.</p>
+      <div class="hang-nut">
+        <input type="text" id="gaTen" maxlength="40" placeholder="Gia đình … (không bắt buộc)">
+        <button class="nut chinh" id="gaTao">Tạo thẻ</button>
+        <button class="nut" id="gaLuu" disabled>Lưu ảnh</button>
+        <button class="nut" id="gaChiaSe" disabled>Chia sẻ</button>
+      </div>
+      <canvas id="gaCanvas" width="1080" height="1350" class="the-giao-uoc"></canvas>
+    </div>
+  </section>
+
+  <!-- ═════════════ VỀ DỰ ÁN ═════════════ -->
+  <section id="ve-du-an" class="trang">
+    <h2>Về dự án</h2>
+    <div class="the" id="vdaDoi"></div>
+    <div class="the" id="vdaKetQua"></div>
+    <div class="the">
+      <h3>Hạn chế – nhóm nói rõ</h3>
+      <ul>
+        <li>AI <b>có thể bỏ sót</b> dòng chảy, và có thể tô nhầm chỗ không có. Không tô màu <b>không có nghĩa là an toàn</b>.</li>
+        <li>AI học từ ảnh camera đặt <b>trên cao (khoảng 40 m)</b> ở hai bãi biển Tây Ban Nha. Ảnh chụp từ bãi cát, ảnh ban đêm, ảnh mờ sẽ khó hơn nhiều.</li>
+        <li>Chưa kiểm chứng đủ với biển Đà Nẵng; ảnh Đà Nẵng chỉ dùng để thử khi chưa có cứu hộ xác nhận.</li>
+        <li>Trang web <b>không dùng để chọn chỗ tắm</b>. Ra biển hãy nghe theo cứu hộ và biển báo.</li>
+        <li>Ảnh bạn chọn chỉ được xử lý trên máy của bạn, không gửi đi, không lưu lại.</li>
+      </ul>
+    </div>
+    <div class="the" id="vdaNguon"></div>
+  </section>
+
+  <!-- ═════════════ THỬ NGHIỆM (thầy cô, nhóm) ═════════════ -->
+  <section id="thu-nghiem" class="trang">
+    <h2>Chế độ thử nghiệm</h2>
+    <div id="tnBatDau" class="the">
+      <p style="margin-top:0">Dùng khi nhóm thử nghiệm với các bạn (đã có phụ huynh đồng ý). Mỗi bạn nhận một <b>mã số</b>, không ghi tên. Bài gồm: Đề 1 (10 ảnh) → học <span id="tnPhutDau">10</span> phút → Đề 2 (10 ảnh) → 3 câu cảm nhận. Nửa số bạn làm Đề A trước, nửa còn lại làm Đề B trước (theo mã chẵn, lẻ).</p>
+      <div class="hang-nut">
+        <label>Mã số: <input type="text" id="tnMa" maxlength="12" style="width:110px"></label>
+        <button class="nut chinh" id="tnVao">Bắt đầu</button>
+      </div>
+      <p class="ghi-chu" id="tnGhiChu"></p>
+    </div>
+    <div id="tnHoc" class="the an">
+      <h3 style="margin-top:0">Bây giờ bạn học <span id="tnPhut"></span> phút</h3>
+      <p>Mở <a href="#nho" target="_self">Nhớ để sống</a> và làm <b>Luyện tập</b> ở dưới. Hết giờ (hoặc học xong) thì bấm “Làm Đề 2”.</p>
+      <p class="dem-lon" id="tnDongHo">10:00</p>
+      <div class="hang-nut"><button class="nut" id="tnMoLuyen">Luyện tập 10 ảnh</button><button class="nut chinh" id="tnDe2">Làm Đề 2</button></div>
+    </div>
+    <div id="tnCamNhan" class="the an"></div>
+    <div id="tnXong" class="the an"></div>
+    <details class="the" id="tnQuanLy"><summary>Dành cho nhóm: kết quả đã lưu trên máy này</summary>
+      <div id="tnBang"></div>
+      <div class="hang-nut">
+        <button class="nut chinh" id="tnTaiCSV">Tải tệp kết quả (.csv)</button>
+        <button class="nut canh" id="tnXoa">Xóa tất cả kết quả trên máy này</button>
+      </div>
+      <div id="tnXacNhanXoa" class="an"><p>Gõ chữ <b>XOA</b> rồi bấm Xác nhận: <input id="tnGoXoa" style="width:80px"> <button class="nut canh" id="tnXacNhan">Xác nhận</button></p></div>
+    </details>
+  </section>
+</main>
+
+<footer class="cuoi">
+  <p id="chanTrang"></p>
+  <p><a href="#thu-nghiem">Chế độ thử nghiệm</a> · Không thu thập dữ liệu cá nhân · Chạy được khi không có mạng</p>
+</footer>
+
+<script src="thu-vien/tf.min.js"></script>
+<script src="thu-vien/teachablemachine-image.min.js"></script>
+<script src="mb-chung.js"></script>
+<script src="cau-hinh.js"></script>
+<script src="du-lieu-trang.js"></script>
+<script>/* Mở trực tiếp tệp (không qua máy chủ): nạp mô hình và ảnh đã nhúng sẵn */
+if (location.protocol === 'file:') document.write('<script src="nhung/mo-hinh.js"><\/script><script src="nhung/anh.js"><\/script>');</script>
+<script src="app.js"></script>
+<script src="cai-dat.js"></script>
+</body>
+</html>
