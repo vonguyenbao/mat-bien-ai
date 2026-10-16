@@ -321,6 +321,7 @@
   const SA = { anh: null, khoa: '', kq: null };
   async function soi(im, khoa) {
     SA.anh = im; SA.khoa = khoa; SA.kq = null;
+    if (window.MB_NGU_HANH_SOI) window.MB_NGU_HANH_SOI.datLai();
     const cv = $('saCanvas'), ctx = cv.getContext('2d');
     veAnh(cv, im);
     const td = $('saThongDiep');
@@ -355,11 +356,12 @@
     const nhac = '<br><span class="ghi-chu">Mắt Biển AI là công cụ học tập, không thay thế cứu hộ. Ra biển: chỉ tắm trong vùng phao, vào giờ có cứu hộ.</span>';
     if (SA.kq.caAnh) {
       const pt = Math.round((dem.p || 0) * 100) + '%';
-      const ve = ' <span class="ghi-chu">AI của nhóm chấm cả ảnh nên chưa chỉ ra chỗ nào – hãy tự tìm 5 dấu hiệu Ngũ Hành.</span>';
+      const ve = ' <span class="ghi-chu">AI của nhóm chấm cả ảnh nên chưa chỉ ra chỗ nào – hãy tự soi 5 dấu hiệu Ngũ Hành ngay bên dưới.</span>';
       if (SA.kq.tuChoi) { td.className = 'the thong-diep-xam'; td.innerHTML = '<b>Ảnh này có vẻ không phải ảnh mặt biển.</b> Hãy chọn ảnh bãi biển, chụp ngang, từ chỗ cao.' + nhac; }
       else if (dem.do) { td.className = 'the thong-diep-do'; td.innerHTML = '<b>AI thấy dấu hiệu dòng chảy xa bờ trong ảnh này (' + pt + ').</b>' + ve + nhac; }
       else if (dem.vang) { td.className = 'the thong-diep-vang'; td.innerHTML = '<b>AI chưa chắc (' + pt + ').</b> Hãy hỏi cứu hộ trước khi xuống nước.' + ve + nhac; }
       else { td.className = 'the thong-diep-xam'; td.innerHTML = '<b>AI chưa thấy dấu hiệu rõ (' + pt + ').</b> Điều này <b>không có nghĩa là an toàn</b>.' + ve + nhac; }
+      if (window.MB_NGU_HANH_SOI) window.MB_NGU_HANH_SOI.capNhat(SA.kq.tuChoi ? 'tuchoi' : dem.do ? 'do' : dem.vang ? 'vang' : 'xam', dem.p);
       return;
     }
     if (SA.kq.tuChoi) {
@@ -375,6 +377,7 @@
       td.className = 'the thong-diep-xam';
       td.innerHTML = '<b>AI chưa thấy dấu hiệu rõ.</b> Điều này <b>không có nghĩa là an toàn</b>.' + nhac;
     }
+    if (window.MB_NGU_HANH_SOI) window.MB_NGU_HANH_SOI.capNhat(SA.kq.tuChoi ? 'tuchoi' : dem.do ? 'do' : dem.vang ? 'vang' : 'xam', null);
   }
 
   // ───────────────────────── Trang Nhớ để sống
