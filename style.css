@@ -100,3 +100,10 @@ table.bang th { background: #f1f5f9; }
 }
 .canh-bao-do { border-left: 5px solid var(--do); }
 .canh-bao-do ul { margin: 6px 0 0; }
+/* va-17-10: bảng 3 con số AI chấm */
+.bang-so { margin-top: 10px; display: grid; gap: 5px; }
+.dong-so { display: grid; grid-template-columns: 150px 1fr 48px; gap: 8px; align-items: center; font-size: 15px; }
+.dong-so .thanh { height: 10px; background: var(--vien); border-radius: 6px; overflow: hidden; }
+.dong-so .thanh i { display: block; height: 100%; background: var(--bien); }
+.dong-so b { text-align: right; font-variant-numeric: tabular-nums; }
+@media (max-width: 520px) { .dong-so { grid-template-columns: 118px 1fr 44px; font-size: 14px; } }

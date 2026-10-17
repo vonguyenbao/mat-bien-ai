@@ -149,7 +149,7 @@
     const soKhong = AI.iKhong >= 0 ? o.filter((x) => argmax(x.p) === AI.iKhong).length : 0;
     return { cot, hang, o, tiLeKhong: soKhong / o.length, tuChoi: soKhong / o.length >= (CH.NGUONG_TU_CHOI || 0.8) };
   }
-  function veLopAI(ctx, W, H, kq, hienSo, hienLuoi) {
+  function veLopAI(ctx, W, H, kq, hienSo, hienLuoi, anSo) {
     const tDo = CH.NGUONG_DO ?? 0.5, tVang = CH.NGUONG_VANG ?? 0.3;
     const dem = { do: 0, vang: 0 };
     if (kq.caAnh) {
@@ -157,7 +157,7 @@
       dem.p = pr;
       const mau = kq.tuChoi ? null : (pr >= tDo ? 'rgba(220,38,38,.95)' : (pr >= tVang ? 'rgba(250,204,21,.98)' : null));
       if (mau) { const lw = Math.max(8, Math.round(W / 70)); ctx.strokeStyle = mau; ctx.lineWidth = lw; ctx.strokeRect(lw / 2, lw / 2, W - lw, H - lw); if (pr >= tDo) dem.do = 1; else dem.vang = 1; }
-      if (hienSo || mau) veNhan(ctx, 'AI chấm cả ảnh: ' + Math.round(pr * 100) + '%', 12, 12, mau ? (pr >= tDo ? 'rgba(153,27,27,.92)' : 'rgba(161,98,7,.92)') : 'rgba(15,23,42,.8)');
+      if (hienSo || mau) veNhan(ctx, anSo ? (pr >= tDo ? 'AI: có dấu hiệu dòng chảy' : 'AI: chưa chắc') : 'AI chấm cả ảnh: ' + Math.round(pr * 100) + '%', 12, 12, mau ? (pr >= tDo ? 'rgba(153,27,27,.92)' : 'rgba(161,98,7,.92)') : 'rgba(15,23,42,.8)');
       return dem;
     }
     for (const x of kq.o) {
@@ -346,22 +346,31 @@
     $('saDangCham').classList.add('an');
     veLaiSoi();
   }
+  // va-17-10: bảng 3 con số AI cho cả ảnh (chỉ hiện khi đánh dấu "Hiện con số AI chấm")
+  function bangSo(p) {
+    const tDo = CH.NGUONG_DO ?? 0.5, tVang = CH.NGUONG_VANG ?? 0.3;
+    const ds = [[AI.iRip, 'Dòng chảy xa bờ'], [AI.iSong, 'Biển bình thường'], [AI.iKhong, 'Không phải mặt biển']].filter((x) => x[0] >= 0);
+    return '<div class="bang-so">' + ds.map(([i, t]) => { const v = Math.round((p[i] || 0) * 100); return '<div class="dong-so"><span>' + t + '</span><span class="thanh"><i style="width:' + v + '%"></i></span><b>' + v + '%</b></div>'; }).join('')
+      + '<span class="ghi-chu">Ba con số AI cho cả ảnh, cộng lại khoảng 100%. Viền đỏ khi “dòng chảy” từ ' + Math.round(tDo * 100) + '%, viền vàng từ ' + Math.round(tVang * 100) + '% (ngưỡng tạm, nhóm đang đo để chọn).</span></div>';
+  }
   function veLaiSoi() {
     if (!SA.anh) return;
     const cv = $('saCanvas'), ctx = cv.getContext('2d');
     veAnh(cv, SA.anh);
     if (!SA.kq) return;
-    const dem = veLopAI(ctx, cv.width, cv.height, SA.kq, $('saHienSo').checked, $('saHienLuoi').checked);
+    const dem = veLopAI(ctx, cv.width, cv.height, SA.kq, $('saHienSo').checked, $('saHienLuoi').checked, !$('saHienSo').checked);
     const td = $('saThongDiep');
     const nhac = '<br><span class="ghi-chu">Mắt Biển AI là công cụ học tập, không thay thế cứu hộ. Ra biển: chỉ tắm trong vùng phao, vào giờ có cứu hộ.</span>';
     if (SA.kq.caAnh) {
-      const pt = Math.round((dem.p || 0) * 100) + '%';
+      const so = $('saHienSo').checked;
+      const pt = so ? ' (' + Math.round((dem.p || 0) * 100) + '%)' : '';
       const ve = ' <span class="ghi-chu">AI của nhóm chấm cả ảnh nên chưa chỉ ra chỗ nào – hãy tự soi 5 dấu hiệu Ngũ Hành ngay bên dưới.</span>';
       if (SA.kq.tuChoi) { td.className = 'the thong-diep-xam'; td.innerHTML = '<b>Ảnh này có vẻ không phải ảnh mặt biển.</b> Hãy chọn ảnh bãi biển, chụp ngang, từ chỗ cao.' + nhac; }
-      else if (dem.do) { td.className = 'the thong-diep-do'; td.innerHTML = '<b>AI thấy dấu hiệu dòng chảy xa bờ trong ảnh này (' + pt + ').</b>' + ve + nhac; }
-      else if (dem.vang) { td.className = 'the thong-diep-vang'; td.innerHTML = '<b>AI chưa chắc (' + pt + ').</b> Hãy hỏi cứu hộ trước khi xuống nước.' + ve + nhac; }
-      else { td.className = 'the thong-diep-xam'; td.innerHTML = '<b>AI chưa thấy dấu hiệu rõ (' + pt + ').</b> Điều này <b>không có nghĩa là an toàn</b>.' + ve + nhac; }
-      if (window.MB_NGU_HANH_SOI) window.MB_NGU_HANH_SOI.capNhat(SA.kq.tuChoi ? 'tuchoi' : dem.do ? 'do' : dem.vang ? 'vang' : 'xam', dem.p);
+      else if (dem.do) { td.className = 'the thong-diep-do'; td.innerHTML = '<b>AI thấy dấu hiệu dòng chảy xa bờ trong ảnh này' + pt + '.</b>' + ve + nhac; }
+      else if (dem.vang) { td.className = 'the thong-diep-vang'; td.innerHTML = '<b>AI chưa chắc' + pt + '.</b> Hãy hỏi cứu hộ trước khi xuống nước.' + ve + nhac; }
+      else { td.className = 'the thong-diep-xam'; td.innerHTML = '<b>AI chưa thấy dấu hiệu rõ' + pt + '.</b> Điều này <b>không có nghĩa là an toàn</b>.' + ve + nhac; }
+      if (so) td.insertAdjacentHTML('beforeend', bangSo(SA.kq.o[0].p));
+      if (window.MB_NGU_HANH_SOI) window.MB_NGU_HANH_SOI.capNhat(SA.kq.tuChoi ? 'tuchoi' : dem.do ? 'do' : dem.vang ? 'vang' : 'xam', so ? dem.p : null);
       return;
     }
     if (SA.kq.tuChoi) {
